@@ -1,5 +1,4 @@
 #include "BLE.h"
-#include "Sensor.h"
 #define log(x) Serial.println(x);
 
 Bluetooth::BLE bluetooth;
@@ -18,6 +17,8 @@ void setup()
   bluetooth.setDeviceName("Pedro's RunPod");
   bluetooth.add_characteristic("Potato", "fbed8ddc-109f-11eb-adc1-0242ac120002");
   bluetooth.add_characteristic("Pudim", "16dc549c-10a1-11eb-adc1-0242ac120002");
+
+  // Initialize the BLE 
   bluetooth.begin();
 
 }
@@ -34,6 +35,7 @@ void loop() {
     // Counter that send every odd number to the potato characteristic and every even to the Pudim characteristic
     int i = 0;
     while(true){
+
       i++;
       if(i%2 == 0){
         bluetooth.use_characteristic("Potato"); // Change to the specific characteristic     
@@ -41,6 +43,8 @@ void loop() {
       else{
         bluetooth.use_characteristic("Pudim"); // Change to the specific characteristic 
       }
+      
+      // Send the value of i and notify
       bluetooth.sendDataPoint(i);
       delay(500);
     }
