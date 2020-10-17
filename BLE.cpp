@@ -22,10 +22,10 @@ namespace Bluetooth{
         // Since there is a new message, set the bool variable to true 
         BLE::new_message = true;
 
-        //retorna ponteiro para o registrador contendo o valor atual da caracteristica
+        // Returns a pointer to the message
         std::string rxValue = characteristic->getValue(); 
 
-        //verifica se existe dados (tamanho maior que zero)
+        // Verify rather the length of the message is greater than zero (if it is not, them there was an error)
         if (rxValue.length() > 0){
 
             for (int i = 0; i < rxValue.length(); i++) {

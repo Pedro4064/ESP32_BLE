@@ -28,14 +28,13 @@ namespace Bluetooth
 
     };
 
-    //'wrapper' involta de todo o processo de inicializar e comunicar via BLE
+    //'wrapper' around the whole BLE api
     class BLE {
 
         // Private Variables
         private:
 
             const char* SERVICE_UUID = "ab0828b1-198e-4351-b779-901fa0e0371e";
-            const char* CHARACTERISTIC_UUID = "4ac8a682-9736-4e5d-932b-e9b31405049c";
 
             BLEServer* pserver;                   // pointer to the BLE server   
             BLEService* pservice;                 // pointer to the service 
@@ -61,8 +60,8 @@ namespace Bluetooth
                 std::string* data_array;
             };
 
-            // Variavel static para que possa ser acessada sem ter que necessariamente instanciar a classe.
-            // True se algum dispositivo estiver conectado ao BLE, false otherwise
+            // True if there is a device connected, false otherwise
+            // Static variable so it is accesable without a BLE instance. 
             static bool deviceConnected;
             
             // Variable that tracks rather there are new messages sent 
@@ -87,7 +86,7 @@ namespace Bluetooth
                 }
             }
            
-            // Method que será chamada no main void setUp() para inicializar todo o sistema BLE 
+            // Method to be called in void setUp() to initialize the whole BLE
             void begin();
 
             // Method to set the name which the ESP32 will be discoverable to other devices
@@ -96,7 +95,7 @@ namespace Bluetooth
             // Method used to change which characteristic the user is interacting with
             void use_characteristic(String characteristic_name);
 
-            // Method que irá receber e parse the incoming data into an array of doubles and return its pointer
+            // Mehtod that will receive and parse incoming data into an array of doubles and return its pointer
             double* receivedDataAsDoubleArray();
            
             // Mehtod that will receive the string data, parse it and return an int array with all datapoints 
@@ -105,7 +104,7 @@ namespace Bluetooth
             // Mehtod that will receive the string data, parse it and return a float array with all datapoints 
             float* receivedDataAsFloatArray();
            
-            // Method que irá receber e transformar the incoming data into a string 
+            // Method that will receive and transform the data into a string and return it
             String receivedDataAsString();
 
             // Mehtod that will receive the name and the uuid for a charactertic, instantiate the ble
