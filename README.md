@@ -1,28 +1,33 @@
-# BLE Documentation 
+![](img/BLE_Wrapper.png)
 
 ## Overview 
 • A wrapper around the Bluetooth Low Energy protocol for the ESP32 microcontroller.
 
 ## Topics:
 •[Public Methods](#public-methods)
+
 •[Public Variables](#public-variables)
+
 •[Private Methods](#private-methods)
-•[Private Variables ](#private-variables)
+
 •[Static Members](#static-members)
+
 •[Examples](#examples)
 
 
 
 ## Public Methods
 1. [setDeviceName](#1-setdevicename)
-2. [begin](#2-begin)
-3. [receivedDataAsIntArray](#3-receiveddataasintarray)
-4. [receivedDataAsDoubleArray](#4-receiveddataasdoublearray)
-5. [receivedDataAsFloatArray](#5-receiveddataasfloatarray)
-6. [receivedDataAsString](#6-receiveddataasstring)
-7. [sendDataArray](#7-senddataarray)
-8. [sendDataPoint](#8-senddatapoint)
-9. [releaseMemoryToSystem](#9-releasememorytosystem)
+2. [add_characteristic](#2-add_characteristic)
+3. [use_characteristic](#3-use_characteristic)
+4. [begin](#4-begin)
+5. [receivedDataAsIntArray](#5-receiveddataasintarray)
+6. [receivedDataAsDoubleArray](#6-receiveddataasdoublearray)
+7. [receivedDataAsFloatArray](#7-receiveddataasfloatarray)
+8. [receivedDataAsString](#8-receiveddataasstring)
+9. [sendDataArray](#9-senddataarray)
+10. [sendDataPoint](#10-senddatapoint)
+11. [releaseMemoryToSystem](#11-releasememorytosystem)
 
 
 
@@ -36,8 +41,29 @@ void setDeviceName(std::string name);
 • It takes an `std::string` and sets it as the name which the bluetooth device will be discoverable by other devices.
 
 
+### 2. add_characteristic
 
-### 2. begin
+##### Method Definition
+```c++
+void add_characteristic(String characteristic_name, const char* uuid);
+```
+##### Method Description 
+• It takes the characteristic name (used for future reference) as a `String` and the UUID as a `const char*`.
+Both are stored in a map structure with the characteristic_name as the key and the uuid as the value.
+
+
+### 3. use_characteristic
+
+##### Method Definition
+```c++
+void use_characteristic(String characteristic_name);
+```
+##### Method Description 
+• Changes the working UUID to the one referenced by the `String` key `characteristic_name` passed as
+referenced.
+
+
+### 4. begin
 ##### Method Definition
 ```c++
 void begin();
@@ -53,7 +79,7 @@ void begin();
 
 
 
-### 3. receivedDataAsIntArray
+### 5. receivedDataAsIntArray
 ##### Method Definition
 ```c++
 int* receivedDataAsIntArray();
@@ -65,7 +91,7 @@ int* receivedDataAsIntArray();
 
 
 
-### 4. receivedDataAsDoubleArray
+### 6. receivedDataAsDoubleArray
 ##### Method Definition
 ```c++
 float* receivedDataAsDoubleArray();
@@ -79,7 +105,7 @@ float* receivedDataAsDoubleArray();
 
 
 
-### 5. receivedDataAsFloatArray
+### 7. receivedDataAsFloatArray
 ##### Method Definition
 ```c++
 float* receivedDataAsFloatArray();
@@ -92,7 +118,7 @@ float* receivedDataAsFloatArray();
 
 
 
-### 6. receivedDataAsString
+### 8. receivedDataAsString
 ##### Method Definition
 ```c++
 String receivedDataAsString();
@@ -102,7 +128,7 @@ String receivedDataAsString();
 
 
 
-### 7. sendDataArray
+### 9. sendDataArray
 ##### Template Method Definition
 ```c++
 template <typename T>
@@ -114,7 +140,7 @@ void sendDataArray(T data[], int array_size){...}
 
 
 
-### 8. sendDataPoint
+### 10. sendDataPoint
 ##### Template Method Definition
 ```c++
 template <typename T>
@@ -126,7 +152,7 @@ void sendDataPoint(T data_point){...}
 
 
 
-### 9. releaseMemoryToSystem
+### 11. releaseMemoryToSystem
 ##### Template Method Definition
 ```c++
 template <typename T>
@@ -163,15 +189,7 @@ BLE::data_information parseData(std::string data);
 
 
 
-## Private Variables 
-•Internal variables that are accessible only by methods:
 
-|Data Type|Variable Name|Default value|
-|---------|-------------|-------------|
-|`const char*`|SERVICE_UUID|`ab0828b1-198e-4351-b779-901fa0e0371e`|
-|`const char*`|CHARACTERISTIC_UUID_RX|`4ac8a682-9736-4e5d-932b-e9b31405049c`|
-|`const char*`|CHARACTERISTIC_UUID_TX|`0972EF8C-7613-4075-AD52-756F33D4DA91`|
-|`std::string`|DeviceName|`"ESP32-BLE"`|
 
 
 ## Static members 
@@ -185,7 +203,20 @@ BLE::data_information parseData(std::string data);
 if (Bluetooth::BLE::deviceConnected){...}
 
 // If there is no device...
-else if (!Bluetooth::BLE::deviceConnected){...}
+else{...}
+```
+
+#### 2. new_message 
+• `bool` variable that is `true` when there is an unread message and `false`otherwise.
+
+##### Using it
+```c++
+// If there is a new message 
+if (Bluetooth::BLE::new_message){...}
+
+// If there is no new messages...
+else{...}
+
 ```
 
 ## Examples
@@ -198,23 +229,43 @@ else if (!Bluetooth::BLE::deviceConnected){...}
 Bluetooth::BLE bluetooth;
 
 void setUp(){
-    
-    // set the device name
-    bluetooth.setDeviceName("Weather_Station");
-    // Start the BLE server
+
+    // initialize the serial monitor 
+    Serial.begin(115200);
+
+    // Add the characteristics that will be used 
+    bluetooth.setDeviceName("Pedro's RunPod"); 
+    bluetooth.add_characteristic("Angle", "fbed8ddc-109f-11eb-adc1-0242ac120002");
+    bluetooth.add_characteristic("Time", "16dc549c-10a1-11eb-adc1-0242ac120002");
+
+    // Initialize the BLE 
     bluetooth.begin();
 }
 
 void loop(){
 
-    // Check to see if a device is connected, if it is send the sensor data
-    if (Bluetooth::BLE::deviceConnected){
+    delay(1000);
+  
+    //If a device connected to the ESP32, begin the processes, otherwise keep scanning.
+    if(Bluetooth::BLE::deviceConnected )
+    {
+        log("Device connected!!"); 
 
-        //Read the sensor on pin 10
-        int sensor_data = analogRead(10); 
+        // Counter that send every odd number to the Angle characteristic and every even to the Time characteristic
+        int i = 0;
+        while(true){
+            i++;
+            if(i%2 == 0){
+                bluetooth.use_characteristic("Angle"); // Change to the specific characteristic     
+            }
+            else{
+                bluetooth.use_characteristic("Time"); // Change to the specific characteristic 
+            }
 
-        // Send the data 
-        bluetooth.sendDataPoint(sensor_data);
+            // Send the value of i and notify
+            bluetooth.sendDataPoint(i);
+            delay(500);
+        }
     }
 }
 ```
