@@ -2,6 +2,8 @@
 
 ## Overview 
 • A wrapper around the Bluetooth Low Energy protocol for the ESP32 microcontroller.
+• Originally it was part of another [project](https://github.com/Pedro4064/Flexivel) of mine, so if previous versions are necessary, you may visit
+its git history on the other directory.
 
 ## Topics:
 •[Public Methods](#public-methods)
@@ -74,8 +76,7 @@ void begin();
 |data type| variable | value |
 |---------|----------|-------|
 |`const char*`|SERVICE_UUID|`ab0828b1-198e-4351-b779-901fa0e0371e`|
-|`const char*`|CHARACTERISTIC_UUID_RX|`4ac8a682-9736-4e5d-932b-e9b31405049c`|
-|`const char*`|CHARACTERISTIC_UUID_TX|`0972EF8C-7613-4075-AD52-756F33D4DA91`|
+
 
 
 
