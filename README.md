@@ -3,7 +3,7 @@
 ## Overview 
 • A wrapper around the Bluetooth Low Energy protocol for the ESP32 microcontroller.
 
-• Originally it was part of another [project](https://github.com/Pedro4064/Flexivel) of mine, so if previous versions are necessary, you may visit
+• Originally it was part of another [project](https://github.com/Pedro4064/Flexivel), so if previous versions are necessary, you may visit
 its git history on the other directory.
 
 ## Topics:
